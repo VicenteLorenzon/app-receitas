@@ -1,0 +1,307 @@
+openapi: "3.0.0"
+info:
+  title: API de Receitas
+  description: API para gerenciamento de receitas culinárias
+  version: "1.0.0"
+servers:
+  - url: /api/
+
+paths:
+  /cadastro/:
+    post:
+      tags:
+        - Usuário
+      summary: Registrar um novo usuário
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSerializer"
+      responses:
+        "201":
+          description: Usuário registrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSerializer"
+        "400":
+          description: Corpo da solicitação inválido ou campos obrigatórios ausentes
+
+  /usuario/{user_id}/:
+    get:
+      tags:
+        - Usuário
+      summary: Obter informações de um usuário
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Informações do usuário obtidas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSerializer"
+        "404":
+          description: Usuário não encontrado
+
+  /login/:
+    post:
+      tags:
+        - Autenticação
+      summary: Efetuar login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        "200":
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        "401":
+          description: Credenciais inválidas
+
+  /logout/:
+    post:
+      tags:
+        - Autenticação
+      summary: Efetuar logout
+      responses:
+        "200":
+          description: Logout bem-sucedido
+
+  /receitas/criar/:
+    post:
+      tags:
+        - Receita
+      summary: Criar uma nova receita
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReceitaSerializer"
+      responses:
+        "201":
+          description: Receita criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceitaSerializer"
+        "400":
+          description: Corpo da solicitação inválido ou campos obrigatórios ausentes
+
+  /receitas/:
+    get:
+      tags:
+        - Receita
+      summary: Obter lista de receitas
+      parameters:
+        - name: user_id
+          in: query
+          description: ID do usuário para filtrar as receitas por usuário
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: pesquisa
+          in: query
+          description: Termo de pesquisa para filtrar as receitas por título
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de receitas obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReceitaSerializer"
+
+  /receitas/{receita_id}/:
+    get:
+      tags:
+        - Receita
+      summary: Obter informações de uma receita
+      parameters:
+        - name: receita_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Informações da receita obtidas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceitaSerializer"
+        "404":
+          description: Receita não encontrada
+
+  /receitas/avaliar/:
+    post:
+      tags:
+        - Receita
+      summary: Criar uma nova avaliação para uma receita
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AvaliacaoSerializer"
+      responses:
+        "201":
+          description: Avaliação criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvaliacaoSerializer"
+        "400":
+          description: Corpo da solicitação inválido ou campos obrigatórios ausentes
+
+  /receitas/salvar/:
+    post:
+      tags:
+        - Receita
+      summary: Salvar uma receita
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReceitaSalvaSerializer"
+      responses:
+        "201":
+          description: Receita salva com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceitaSalvaSerializer"
+        "400":
+          description: Corpo da solicitação inválido ou campos obrigatórios ausentes
+
+  /receitas/salvas/:
+    get:
+      tags:
+        - Receita
+      summary: Obter lista de receitas salvas por um usuário autenticado
+      responses:
+        "200":
+          description: Lista de receitas salvas obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReceitaSerializer"
+
+  /receitas/{receita_id}/avaliacoes/:
+    get:
+      tags:
+        - Avaliação
+      summary: Obter lista de avaliações de uma receita
+      parameters:
+        - name: receita_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Lista de avaliações obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AvaliacaoSerializer"
+
+components:
+  schemas:
+    UserSerializer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+      required:
+        - username
+        - password
+        - email
+
+    AvaliacaoSerializer:
+      type: object
+      properties:
+        comentario:
+          type: string
+        id_usuario:
+          type: integer
+          format: int64
+        id_receita:
+          type: integer
+          format: int64
+        avaliacao:
+          type: integer
+          format: int64
+        data_postagem:
+          type: string
+          format: date-time
+
+    ReceitaSerializer:
+      type: object
+      properties:
+        titulo:
+          type: string
+        ingredientes:
+          type: string
+        data_criacao:
+          type: string
+          format: date-time
+        id_usuario:
+          type: integer
+          format: int64
+        imagem:
+          type: string
+          format: binary
+        descricao:
+          type: string
+
+    ReceitaSalvaSerializer:
+      type: object
+      properties:
+        id_usuario:
+          type: integer
+          format: int64
+        id_receita:
+          type: integer
+          format: int64
+        data_salva:
+          type: string
+          format: date-time
