@@ -1,0 +1,67 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+
+# Django Media
+media/
+
+# Django static
+static/
+
+# Django Secret Key
+.env
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Node.js
+node_modules/
+
+# React
+build/
+dist/
+.cache/
+coverage/
+
+# Compiled Python files
+*.pyc
+
+# Package Files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+__pycache__/
+.Python
+installed_packages.txt
+
+# Bootstrap
+.cache/
+.yarn/
+yarn.lock
+*.env
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Other
+*.pyc
+.DS_Store
